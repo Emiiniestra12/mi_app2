@@ -67,7 +67,7 @@ export class EmpleadosService {
         return await this.repoEmpleado.save( register );
     }
 
-    async findAllEmpleado(page: number = 1, limit: number = 10, baseUrl: string) {
+    async findAllEmpleado(page: number = 1, limit: number = 100, baseUrl: string) {
 
         const [data, total] = await this.repoEmpleado
             .createQueryBuilder("e")
@@ -81,14 +81,14 @@ export class EmpleadosService {
                 .createQueryBuilder("p")
                 .where("p.id_empleado = :id", { id: empleado.id_empleado })
                 .orderBy("p.id_reg_p", "DESC")
-                .limit(5)
+                .limit(50)
                 .getMany();
 
             empleado.asistencia = await this.repoAsistencia
                 .createQueryBuilder("a")
                 .where("a.id_empleado = :id", { id: empleado.id_empleado })
                 .orderBy("a.fecha", "DESC")
-                .limit(5)
+                .limit(50)
                 .getMany();
         }
 

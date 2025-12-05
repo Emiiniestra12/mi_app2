@@ -16,7 +16,7 @@ export const useGamerApi = (): UseGamerApi => {
     const [ isLoading, setIsLoading ] = useState<boolean>( false );
     const [ listGamer, setListGamer ] = useState<GamerResponse>({} as GamerResponse);
 
-    const apiUrl: string = "http://192.168.100.51:3000/gamer";
+    const apiUrl: string = "http://172.20.10.3:3000/gamer";
 
     const loadGamer = async () => {
         setIsLoading( true );

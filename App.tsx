@@ -13,12 +13,20 @@ import { DrawerNavigator } from './navegador/drawernavigator';
 import { LogroDificultad } from './screens/gamerscreen/logorsdificulltad';
 import { PartidasPorJuegoScreen } from './screens/gamerscreen/partidasporjuego';
 import { GamersPorPais } from './screens/gamerscreen/gamerspais';
+import { EmpleadosScreen } from './screens/empleadosscreen/empleadosScreen';
+import { TotalAsistenciaScreen } from './screens/empleadosscreen/totalasistenciasscreen';
+import { NominaScreen } from './screens/empleadosscreen/nominascreen';
+import { DiasTrabajadosScreen } from './screens/empleadosscreen/diastrabajadosscreen';
+import { ReporteAsistencia } from './screens/empleadosscreen/reporteasistenciascreen';
+import { ReporteProduccion } from './screens/empleadosscreen/reporteproduccionscreen';
+import { MenuEmpleadosScreen } from './screens/empleadosscreen/menuempleadosscreen';
+import { EmpleadoNavigator } from './navegador/empleados-navigator';
 
 const App = () => {
     return (
      <GestureHandlerRootView style={{ flex: 1 }}>     
      <NavigationContainer>
-      <GamerNavigator/>
+      <EmpleadoNavigator/>
     </NavigationContainer>
     </GestureHandlerRootView> 
 

@@ -1,26 +1,27 @@
-import { StyleSheet, TextInput } from "react-native";
+import { StyleSheet, TextInput, Pressable, Text } from "react-native";
+import React from "react";
+import { BlurView } from '@react-native-community/blur';
 
 export const appTheme = StyleSheet.create({
-    marginGlobal: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        alignContent: "center"
-    },
-    container: {
-        justifyContent: "center",
-        alignItems: "center"
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: "bold",
-        color: "white",
-        fontFamily:"sans-serif"
-    },
-    textInput: {
+  marginGlobal: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     alignContent: "center",
+  },
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "white",
+    fontFamily: "sans-serif",
+  },
+  textInput: {
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "transparent",
     borderRadius: 10,
     textAlign: "center",
@@ -32,62 +33,59 @@ export const appTheme = StyleSheet.create({
     borderColor: "#73aae6ff",
     color: "white",
   },
-    avatar: {
-        height: 140,
-        width: 140,
-        borderRadius: 100,
-        borderWidth: 5,
-        borderColor: "violet"
-    },
-    menuContainer:{
-        alignItems: "center",
-        marginHorizontal: 10,
-        marginVertical: 10
-    },
-    menuBtn:{
-        marginVertical: 10,
-        borderWidth: 2,
-        borderRadius: 10,
-        width: 180,
-        justifyContent: "center",
-        borderColor: "violet"
-    },
-    textBtn:{
-        fontSize: 20,
-        color: "purple",
-        fontWeight: "bold",
-        textAlign: "center",
-        backgroundColor: "white"
-    },
-    });
+  avatar: {
+    height: 140,
+    width: 140,
+    borderRadius: 100,
+    borderWidth: 5,
+    borderColor: "violet",
+  },
+  menuContainer: {
+    alignItems: "center",
+    marginHorizontal: 10,
+    marginVertical: 10,
+  },
+  menuBtn: {
+    marginVertical: 10,
+    borderWidth: 2,
+    borderRadius: 10,
+    width: 180,
+    justifyContent: "center",
+    borderColor: "violet",
+  },
+  textBtn: {
+    fontSize: 20,
+    color: "purple",
+    fontWeight: "bold",
+    textAlign: "center",
+    backgroundColor: "white",
+  },
+});
 
 export const temaCarta = StyleSheet.create({
-
-  containerCard: { 
-    flex: 1, 
-    justifyContent: "center", 
-    alignItems: "center", 
-    padding: 20, 
-    backgroundColor: "#f2f2f2" 
+  containerCard: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "#f2f2f2",
   },
-  titleCard: { 
-    fontSize: 30, 
-    fontWeight: "bold", 
+  titleCard: {
+    fontSize: 30,
+    fontWeight: "bold",
     marginBottom: 30,
-    fontFamily:"monospace",
+    fontFamily: "monospace",
     color: "#2de4e1ff",
-    alignItems:"center",
-    justifyContent:"center",
-    backgroundColor:"#3a363bf5",
-    borderRadius:12,
-    textAlign:"center"
+    backgroundColor: "#3a363bf5",
+    borderRadius: 12,
+    textAlign: "center",
   },
   cardEstilo: {
     width: "90%",
     padding: 10,
-    backgroundColor: "#3a363bf5", 
+    backgroundColor: "#3a363bf5",
     borderRadius: 20,
-    borderColor:"#c109eff5",
+    borderColor: "#c109eff5",
     marginBottom: 16,
     alignItems: "center",
     justifyContent: "center",
@@ -97,16 +95,77 @@ export const temaCarta = StyleSheet.create({
     shadowRadius: 10,
     elevation: 10,
   },
-  cardText: { 
-    color: "#fff", 
-    fontSize: 20, 
+  cardText: {
+    color: "#fff",
+    fontSize: 20,
     fontWeight: "bold",
-    fontFamily:"sans-serif-condensed" 
-
+    fontFamily: "sans-serif-condensed",
   },
   cardPressable: {
-    opacity: 0.8, 
-  }
+    opacity: 0.8,
+  },
+  cardEstilo2: {
+  width: "100%",
+  backgroundColor: "rgba(255, 255, 255, 0.10)", 
+  borderRadius: 20,
+  padding: 22,
+  marginBottom: 18,
+  borderWidth: 1,
+  borderColor: "rgba(255, 255, 255, 0.20)",
+  overflow: "hidden", 
+  shadowColor: "#00faff",
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.25,
+  shadowRadius: 12,
+  elevation: 10,
+},
+cardEstilo3: {
+  width: "100%",
+  backgroundColor: "#041f29",
+  borderRadius: 20,
+  padding: 22,
+  marginBottom: 18,
+  borderWidth: 2,
+  borderColor: "#28cff0",
+  shadowColor: "#28cff0",
+  shadowOffset: { width: 0, height: 0 },
+  shadowOpacity: 0.8,
+  shadowRadius: 20,
+  elevation: 12,
+},
+
+label: {
+  fontSize: 16,
+  fontWeight: "600",
+  color: "#0cb4c3ff",
+},
+
+value: {
+  fontSize: 16,
+  fontWeight: "bold",
+  color: "#10deaeff",
+  marginBottom: 6,
+},
+button2: {
+  backgroundColor: "#2de4e1ff",
+  paddingVertical: 14,
+  borderRadius: 12,
+  marginBottom: 30,
+  alignItems: "center",
+  borderWidth: 2,
+  borderColor: "#00faff",
+  shadowColor: "#00faff",
+  shadowOffset: { width: 0, height: 0 },
+  shadowOpacity: 0.9,
+  shadowRadius: 15,
+  elevation: 10,
+},
+buttonText2: {
+  color: "#15081aff",
+  fontWeight: "bold",
+  fontSize: 18,
+  textShadowColor: "#00faff",
+  textShadowOffset: { width: 0, height: 0 },
+  textShadowRadius: 10,
+}
 });
-
-

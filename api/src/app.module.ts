@@ -16,12 +16,12 @@ import { Gamer } from './gamer/entities/gamer.entity';
       username: 'postgres',
       password: 'Megadeth12',
       database: 'practicas',
-      entities:[Gamer],
+      entities:[Empleado],
       synchronize: true,        
       autoLoadEntities: true,   
       logging: true,            
     }),
-    GamerModule
+    EmpleadosModule
     //EmpleadosModule
     
   ],

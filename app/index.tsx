@@ -1,4 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
+import 'react-native-reanimated';
+
 
 export default function Page() {
   return (

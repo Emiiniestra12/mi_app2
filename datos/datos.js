@@ -1,9 +1,11 @@
 const axios = require("axios");
 
+// ==========================
+// CONFIGURACIÓN
+// ==========================
 const API_BASE = "http://localhost:3000";
-const TOTAL_EMPLEADOS = 100;
+const TOTAL_EMPLEADOS = 10;
 const YEAR = 2025;
-const EMPLEADOS = [];
 
 const AREAS = ["OFICINA", "PRODUCCION", "INVENTARIO"];
 const TURNOS = ["MATUTINO", "VESPERTINO", "NOCTURNO", "MIXTO"];
@@ -15,7 +17,7 @@ const NOMBRES = [
   "Roberto","Eduardo","Cristian","Mario","Diego","Omar","Sergio",
   "Francisco","Adrian","Hernan","Erick","Kevin","Oscar","Manuel",
   "Víctor","Alan","Emilio","Ramiro","Leonardo","Esteban","Bruno",
-  "Mauricio","Gustavo","Elías","Tomás",
+  "Mauricio","Gustavo","Elías","Tomás"
 ];
 
 const APELLIDOS = [
@@ -27,115 +29,130 @@ const APELLIDOS = [
   "Arias","Palacios","Estrada","Valdez","Montoya","Ramos"
 ];
 
-const random = ( arr ) => arr[Math.floor(Math.random() * arr.length)];
+const random = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
-const generarNombreCompleto = () => {
-    return {
-        nombre: random(NOMBRES),
-        apellido_p: random(APELLIDOS),
-        apellido_m: random(APELLIDOS)
-    }
-}
+const generarNombreCompleto = () => ({
+  nombre: random(NOMBRES),
+  apellido_p: random(APELLIDOS),
+  apellido_m: random(APELLIDOS)
+});
+const EMPLEADOS = Array.from({ length: 100 }, (_, i) => i + 1);
 
-const  generarFechas2025 = () => {
+const generarFechas2025 = () => {
   const fechas = [];
-  const start = new Date(`${YEAR}-01-01T00:00:00Z`);
+  const start = new Date(`${YEAR}-01-01T00:00:00`);
+
   for (let d = 0; d < 365; d++) {
-    const cur = new Date(start);
-    cur.setUTCDate(cur.getUTCDate() + d);
-    fechas.push(cur.toISOString().slice(0, 10));
+    let cur = new Date(start);
+    cur.setDate(cur.getDate() + d);
+    fechas.push(cur.toISOString().slice(0, 10)); 
   }
   return fechas;
-}
+};
 
 const FECHAS_2025 = generarFechas2025();
 
 const makeISO = (fecha, hour, minute) => {
   const [y, m, d] = fecha.split("-").map(Number);
-  return new Date(y, m - 1, d, hour, minute, 0).toISOString();
-}
-
-const safePost = async (url, body, maxIntentos = 10, delayMs = 1000) => {
-    let intento = 0;
-
-    while (intento < maxIntentos) {
-        try {
-            return await axios.post(url, body);
-        } catch (e) {
-            intento++;
-            if (intento === maxIntentos) {
-                console.error(`Fallo Final después de ${maxIntentos} intentos -> ${url}:`, e.message);
-                return null;
-            }
-            console.warn(`Error de red (Intento ${intento}/${maxIntentos}) -> ${url}. Reintentando en ${delayMs}ms...`);
-            await new Promise(resolve => setTimeout(resolve, delayMs));
-        }
-    }
+  return new Date(y, m - 1, d, hour, minute).toISOString();
 };
 
-const registerA_P = async ( fecha, empleado ) => {
-    const entradaISO = makeISO(fecha, 8, 0);
-    const salidaISO = makeISO(fecha, 17, 0);
-    const fechaEntrada = new Date(entradaISO);
-    const fechaSalida = new Date(salidaISO);
-    const diferenciaEnMilisegundos = fechaSalida - fechaEntrada;
-    const diferenciaEnHoras = diferenciaEnMilisegundos / 3600000;
-    const register_asistencia = await safePost(`${API_BASE}/empleados/create-asistencia`, {
-        fecha,
-        horaEntrada: entradaISO,
-        horaSalida: salidaISO,
-        entrada: entradaISO,
-        salida: salidaISO,
-        status: random(STATUS_ASISTENCIA),
-        empleado: empleado,
-        horasTrabajadas: diferenciaEnHoras,
-    });
-    const register_produccion = await safePost(`${API_BASE}/empleados/create-produccion`, {
-      fecha,
+const safePost = async (url, body, maxIntentos = 10) => {
+  let intento = 0;
+
+  while (intento < maxIntentos) {
+    try {
+      return await axios.post(url, body);
+    } catch (e) {
+      intento++;
+      if (intento === maxIntentos) {
+        console.error(` Fallo FINAL -> ${url}:`, e.response?.data || e.message);
+        return null;
+      }
+      console.warn(`⚠️ Error (Intento ${intento}/${maxIntentos}) -> ${url}. Reintentando...`);
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+  }
+};
+
+const registerA_P = async (fecha, id_empleado) => {
+  const entradaISO = makeISO(fecha, 8, 0);
+  const salidaISO = makeISO(fecha, 17, 0);
+
+  const fechaISO = `${fecha}T00:00:00`;
+
+  const horas = (new Date(salidaISO) - new Date(entradaISO)) / 3600000;
+
+  const asistenciaPayload = {
+    id_empleado,
+    fecha: fechaISO,
+    horaEntrada: entradaISO,
+    horaSalida: salidaISO,
+    horasTrabajadas: horas,
+    puntual: false,
+    turno: random(TURNOS),
+    estatus: random(STATUS_ASISTENCIA)
+  };
+
+  const produccionPayload = {
+    id_empleado,
+    fecha: fechaISO,
+    turno: random(TURNOS),
+    unidadesProducidas: Math.floor(Math.random() * 3000)
+  };
+
+  const register_asistencia = await safePost(`${API_BASE}/empleados/create-asistencia`, asistenciaPayload);
+  const register_produccion = await safePost(`${API_BASE}/empleados/create-produccion`, produccionPayload);
+
+  return { register_asistencia, register_produccion };
+}
+
+const main = async () => {
+  const EMPLEADOS = [];
+
+  console.log("========== CREANDO EMPLEADOS ==========");
+
+  for (let i = 1; i <= TOTAL_EMPLEADOS; i++) {
+    const n = generarNombreCompleto();
+
+    const empleadoPayload = {
+      nombre: n.nombre,
+      apellido_p: n.apellido_p,
+      apellido_m: n.apellido_m,
+      area: random(AREAS),
       turno: random(TURNOS),
-      unidadesProducidas: Math.floor(Math.random() * 3000),
-      empleado: empleado
-    });
-    return {register_asistencia, register_produccion};
-}
+      salarioDiario: 200 + Math.random() * 350,
+      activo: true
+    };
 
-const main = async() => {
+    const register = await safePost(`${API_BASE}/empleados`, empleadoPayload);
 
-    for (let i = 1; i <= TOTAL_EMPLEADOS; i++) {
-        const dataNombre = generarNombreCompleto();
+    if (register?.data) {
+      const emp = register.data;
+      EMPLEADOS.push(emp.id_empleado);
 
-        const empleadoPayload = {
-          nombre: dataNombre.nombre,
-          apellido_p: dataNombre.apellido_p,
-          apellido_m: dataNombre.apellido_m,
-          area: random(AREAS),
-          turno: random(TURNOS),
-          salarioDiario: 200 + Math.random() * 350,
-          activo: true
-        };
-
-        const register = await safePost(`${API_BASE}/empleados`, empleadoPayload);
-
-        const data = register.data;
-
-        console.log(`Registro empleado ${data.id_empleado}: ${data.nombre} ${data.apellido_p} ${data.apellido_m}`);
-
-        EMPLEADOS.push(data.id_empleado);
+      console.log(`Empleado registrado: ${emp.id_empleado} - ${emp.nombre} ${emp.apellido_p}`);
     }
+  }
 
-    if( EMPLEADOS.length == 0 ) return null; 
 
-    for(const fecha of FECHAS_2025){
-        for ( const empleado of EMPLEADOS ){
-            let registros = await registerA_P(fecha, empleado);
-            if (registros?.register_asistencia && registros?.register_produccion){
-                let asistencia = registros.register_asistencia.data;
-                let produccion = registros.register_produccion.data;
-                console.log(`Registro asistencia ${asistencia.id_reg_a}: ${empleado} ${asistencia.fecha} ${asistencia.horaEntrada}`);
-                console.log(`Registro produccion ${produccion.id_reg_p}: ${empleado} ${produccion.fecha} ${produccion.unidadesProducidas}`);
-            }
-       }
+  if (EMPLEADOS.length === 0) return;
+
+  console.log("========== GENERANDO ASISTENCIAS Y PRODUCCION 2025 ==========");
+
+  for (const fecha of FECHAS_2025) {
+    console.log(`📅 Fecha: ${fecha}`);
+
+    for (const empleado of EMPLEADOS) {
+      const registros = await registerA_P(fecha, empleado);
+
+      if (registros?.register_asistencia && registros?.register_produccion) {
+        console.log(`✔ Empleado ${empleado} OK`);
+      }
     }
-}
+  }
+
+  console.log("FINALIZADO. TODA LA DATA FUE GENERADA CORRECTAMENTE.");
+};
 
 main();
